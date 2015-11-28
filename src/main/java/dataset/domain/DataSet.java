@@ -1,5 +1,8 @@
 package dataset.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -10,7 +13,11 @@ public class DataSet implements Serializable {
     public static String OBJECT_KEY = "DataSet";
 
     private long id;
+
+    @NotEmpty
+    @Size(min = 1, max = 30)
     private String name;
+
     private String path;
     private long authorId;
     private long size;

@@ -1,10 +1,13 @@
 package dataset.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.ws.rs.NotFoundException;
 import java.io.IOException;
 
 /**
@@ -14,14 +17,27 @@ import java.io.IOException;
 public class ExceptionHandlerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(NotFoundException.class)
     private void handleNotFound() {
 
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({IOException.class})
+    @ExceptionHandler(IOException.class)
     private void handleInternalError() {
 
     }
+
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    private void handleUnsupportedMediaTypeError() {
+
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public void handleBadRequestError() {
+
+    }
+
 }

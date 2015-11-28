@@ -1,13 +1,18 @@
 package dataset.domain;
 
 
+import dataset.helpers.FileService;
 import dataset.repository.DataSetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.ws.rs.NotFoundException;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,9 +28,8 @@ public class IDataSetService implements DataSetService {
     private DataSetRepository repository;
     @Autowired
     private RedisAtomicLong redisAtomicLong;
-
-    @Value("{dataset.filepath}")
-    private String filepath;
+    @Autowired
+    private FileService fileService;
 
     @Override
     public String buildKey(long id) {
@@ -33,17 +37,17 @@ public class IDataSetService implements DataSetService {
     }
 
     @Override
-    public DataSet getDataSet(long id) throws IllegalArgumentException {
+    public DataSet getDataSet(long id) throws NotFoundException {
         DataSet dataSet = repository.getDataSet(buildKey(id));
         if (dataSet == null) {
-            throw new IllegalArgumentException();
+            throw new NotFoundException();
         }
         return dataSet;
     }
 
     @Override
     public Long saveDataSet(MultipartFile file) throws IOException {
-        String path = saveFileToDisk(file);
+        String path = fileService.saveToDisk(file);
         DataSet dataSet = new DataSet();
         long id = redisAtomicLong.incrementAndGet();
         dataSet.setId(id);
@@ -56,16 +60,18 @@ public class IDataSetService implements DataSetService {
     }
 
     @Override
-    public void deleteDataSet(long id) {
-        repository.deleteDataSet(buildKey(id));
+    public void updateDataSet(long id, DataSet uDataSet) {
+        DataSet dataSet = repository.getDataSet(buildKey(id));
+        if(dataSet == null) {
+            throw new NotFoundException();
+        }
+        dataSet.setName(uDataSet.getName());
+        repository.saveDataSet(buildKey(id), dataSet);
+
     }
 
-    private String saveFileToDisk(MultipartFile file) throws IOException {
-        byte[] bytes = file.getBytes();
-        String path = filepath + file.getOriginalFilename();
-        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(path)));
-        stream.write(bytes);
-        stream.close();
-        return path;
+    @Override
+    public void deleteDataSet(long id) {
+        repository.deleteDataSet(buildKey(id));
     }
 }
