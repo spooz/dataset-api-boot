@@ -4,6 +4,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by programowanie on 28.11.2015.
@@ -14,29 +17,19 @@ public class DataSet implements Serializable {
 
     private long id;
 
+    // TODO: time of creation
+
     @NotEmpty
     @Size(min = 1, max = 30)
     private String name;
-
     private String path;
-    private long authorId;
-    private long size;
+    private Long authorId;
+    private Long size;
     private String contentType;
-
+    private List<Long> allowedUsers;
 
     public DataSet() {
-
-    }
-    public DataSet(long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public DataSet(long id, String name, String path, long authorId, long size) {
-        this.id = id;
-        this.name = name;
-        this.path = path;
-        this.authorId = authorId;
+        allowedUsers = new LinkedList<>();
     }
 
     public long getId() {
@@ -78,6 +71,26 @@ public class DataSet implements Serializable {
     public String getPath() {
         return path;
     }
+
+    public void setAllowedUsers(List<Long> users) {
+        this.allowedUsers = users;
+    }
+    public List<Long> getUsers() {
+        return allowedUsers;
+    }
+
+    public void addAllowedUser(Long id) {
+        this.allowedUsers.add(id);
+    }
+
+    public void setAuthorId(Long id) {
+        this.authorId = id;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
 
     @Override
     public String toString() {

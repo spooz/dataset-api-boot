@@ -16,7 +16,7 @@ public class DefaultFileService implements FileService {
 
 
    // @Value("{dataset.filepath}") TODO: applic properties
-    private String filepath = "/Users/programowanie";
+    private String filepath = "/Users/programowanie/";
 
     @Override
     public String saveToDisk(MultipartFile file)  throws IOException{

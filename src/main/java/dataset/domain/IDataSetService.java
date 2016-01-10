@@ -17,12 +17,16 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by programowanie on 24.10.2015.
  */
 @Service
 public class IDataSetService implements DataSetService {
+
+    //TODO: accpeted content types
 
     @Autowired
     private DataSetRepository repository;
@@ -39,9 +43,8 @@ public class IDataSetService implements DataSetService {
     @Override
     public DataSet getDataSet(long id) throws NotFoundException {
         DataSet dataSet = repository.getDataSet(buildKey(id));
-        if (dataSet == null) {
+        if (dataSet == null)
             throw new NotFoundException();
-        }
         return dataSet;
     }
 
