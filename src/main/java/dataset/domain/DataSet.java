@@ -75,7 +75,7 @@ public class DataSet implements Serializable {
     public void setAllowedUsers(List<Long> users) {
         this.allowedUsers = users;
     }
-    public List<Long> getUsers() {
+    public List<Long> getAllowedUsers() {
         return allowedUsers;
     }
 
