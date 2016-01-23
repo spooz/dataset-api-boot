@@ -2,6 +2,8 @@ package dataset.domain;
 
 
 import dataset.auth.CurrentUser;
+import dataset.helpers.DataSetNotFoundException;
+import dataset.helpers.DataSetUnauthorizedAccessException;
 import dataset.helpers.FileService;
 import dataset.repository.DataSetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,6 @@ import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,14 +45,14 @@ public class IDataSetService implements DataSetService {
     }
 
     @Override
-    public DataSet getDataSet(long id) {
+    public DataSet getDataSet(long id) throws DataSetNotFoundException, DataSetUnauthorizedAccessException{
         DataSet dataSet = repository.getDataSet(buildKey(id));
 
         if (dataSet == null)
-            throw new NotFoundException();
+            throw new DataSetNotFoundException();
 
         if(dataSet.getAuthorId() != currentUser.getId() && !dataSet.getAllowedUsers().contains(currentUser.getId()))
-            throw new NotAuthorizedException("User not authorized");
+            throw new DataSetUnauthorizedAccessException();
 
         return dataSet;
     }
@@ -73,14 +73,14 @@ public class IDataSetService implements DataSetService {
     }
 
     @Override
-    public void updateDataSet(long id, DataSet uDataSet) {
+    public void updateDataSet(long id, DataSet uDataSet) throws DataSetNotFoundException, DataSetUnauthorizedAccessException {
         DataSet dataSet = repository.getDataSet(buildKey(id));
 
         if(dataSet == null)
-            throw new NotFoundException();
+            throw new DataSetNotFoundException();
 
         if(dataSet.getAuthorId() != currentUser.getId())
-            throw new NotAuthorizedException("User not authorized");
+            throw new DataSetUnauthorizedAccessException();
 
         dataSet.setName(uDataSet.getName());
         repository.saveDataSet(buildKey(id), dataSet);
@@ -88,28 +88,27 @@ public class IDataSetService implements DataSetService {
     }
 
     @Override
-    public void deleteDataSet(long id) {
+    public void deleteDataSet(long id) throws DataSetNotFoundException, DataSetUnauthorizedAccessException{
         DataSet dataSet = repository.getDataSet(buildKey(id));
 
         if(dataSet == null) {
-            throw new NotFoundException();
+            throw new DataSetNotFoundException();
         }
 
         if(dataSet.getAuthorId() != currentUser.getId())
-            throw new NotAuthorizedException("User not authorized");
+            throw new DataSetUnauthorizedAccessException();
 
         repository.deleteDataSet(buildKey(dataSet.getId()));
     }
 
     @Override
-    public void grantAuthorities(long dataSetId, long userId) {
+    public void grantAuthorities(long dataSetId, long userId) throws DataSetNotFoundException, DataSetUnauthorizedAccessException {
         DataSet dataSet = repository.getDataSet(buildKey(dataSetId));
-        if(dataSet == null) {
-            throw new NotFoundException();
-        }
+        if(dataSet == null)
+            throw new DataSetNotFoundException();
 
         if(dataSet.getAuthorId() != currentUser.getId())
-            throw new NotAuthorizedException("User not authorized");
+            throw new DataSetUnauthorizedAccessException();
 
         dataSet.getAllowedUsers().add(userId);
 

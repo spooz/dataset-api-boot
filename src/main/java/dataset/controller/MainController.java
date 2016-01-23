@@ -33,40 +33,40 @@ public class MainController {
 
     @RequestMapping(value = "/{ID}", method = RequestMethod.OPTIONS, produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
-    public DataSet getDataSetDetail(@PathVariable(value = "ID") final long id, @NotEmpty @RequestHeader(value ="token") String token) {
+    public DataSet getDataSetDetail(@PathVariable(value = "ID") final long id, @NotEmpty @RequestHeader(value ="token") String token) throws Exception{
         return dataSetService.getDataSet(id);
     }
 
 
     @RequestMapping(value = "/{ID}", method = RequestMethod.PUT, consumes = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
-    public void editDataSet(@PathVariable(value = "ID") final long id, @Valid @RequestBody DataSet dataSet,@NotEmpty @RequestHeader(value ="token") String token) {
+    public void editDataSet(@PathVariable(value = "ID") final long id, @Valid @RequestBody DataSet dataSet,@NotEmpty @RequestHeader(value ="token") String token) throws Exception {
         dataSetService.updateDataSet(id, dataSet);
 
     }
 
     @RequestMapping(value = "/{ID}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public void downloadDataSet(HttpServletResponse response, @PathVariable(value = "ID") final long id, @NotEmpty @RequestHeader(value ="token") String token) throws IOException {
+    public void downloadDataSet(HttpServletResponse response, @PathVariable(value = "ID") final long id, @NotEmpty @RequestHeader(value ="token") String token) throws Exception {
         DataSet dataSet = dataSetService.getDataSet(id);
        fileService.prepareResponse(dataSet, response);
     }
 
     @RequestMapping(value = "/{ID}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
-    public void deleteDataSet(@PathVariable(value = "ID") final long id, @NotEmpty @RequestHeader(value ="token") String token) {
+    public void deleteDataSet(@PathVariable(value = "ID") final long id, @NotEmpty @RequestHeader(value ="token") String token) throws Exception{
         dataSetService.deleteDataSet(id);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = {"multipart/form-data"}, produces = {"application/json"})
-    public String saveDataSet(@RequestParam(value = "file", required = true) MultipartFile file, @NotEmpty @RequestHeader(value ="token") String token) throws IOException {
+    public String saveDataSet(@RequestParam(value = "file", required = true) MultipartFile file, @NotEmpty @RequestHeader(value ="token") String token) throws Exception {
         Long dataSetId = dataSetService.saveDataSet(file);
         JSONObject response = new JSONObject().append("id", dataSetId);
         return response.toString();
     }
 
     @RequestMapping(value = "/{ID}/share/{user}", method = RequestMethod.POST, consumes = {"application/json"})
-    public void grantAuthorities(@PathVariable(value = "ID") final long dataSetId, @PathVariable(value = "user") final long user, @NotEmpty @RequestHeader(value = "token") String token) {
+    public void grantAuthorities(@PathVariable(value = "ID") final long dataSetId, @PathVariable(value = "user") final long user, @NotEmpty @RequestHeader(value = "token") String token) throws Exception {
         dataSetService.grantAuthorities(dataSetId, user);
     }
 
