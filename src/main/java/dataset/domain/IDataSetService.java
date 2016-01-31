@@ -19,6 +19,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,6 +68,7 @@ public class IDataSetService implements DataSetService {
         dataSet.setSize(file.getSize());
         dataSet.setContentType(file.getContentType());
         dataSet.setAuthorId(currentUser.getId());
+        dataSet.setCreated(LocalDate.now().toString() + " " + LocalTime.now().toString());
         repository.saveDataSet(buildKey(id),dataSet);
         return dataSet.getId();
     }

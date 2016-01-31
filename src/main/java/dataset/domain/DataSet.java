@@ -4,6 +4,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class DataSet implements Serializable {
     private Long size;
     private String contentType;
     private List<Long> allowedUsers;
+    private String created;
 
     public DataSet() {
         allowedUsers = new LinkedList<>();
@@ -89,6 +92,14 @@ public class DataSet implements Serializable {
 
     public Long getAuthorId() {
         return authorId;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public String getCreated(){
+        return this.created;
     }
 
 
