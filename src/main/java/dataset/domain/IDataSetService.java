@@ -28,8 +28,6 @@ import java.util.List;
 @Service
 public class IDataSetService implements DataSetService {
 
-    //TODO: accpeted content types
-
     @Autowired
     private DataSetRepository repository;
     @Autowired

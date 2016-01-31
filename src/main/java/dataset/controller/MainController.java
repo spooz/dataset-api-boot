@@ -24,7 +24,6 @@ import java.util.List;
 @PreAuthorize("@defaultRemoteAuthService.isAuthorized(#token)")
 public class MainController {
 
-    // TODO : accepted media types
 
     @Autowired
     private DataSetService dataSetService;
